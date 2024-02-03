@@ -5,8 +5,7 @@
 #include <string_view>
 #include <sstream>
 
-namespace json
-{
+namespace json {
 
 // a set of macro as an interface for user to 
 
@@ -18,6 +17,7 @@ namespace json
 
 #define START_TO_JSON void FUNC_TO_NAME(json::JObject & obj) const{
 #define to(key) obj[key]
+
 // macro to add a customized struct (recursively call)
 #define to_struct(key, struct_member) json::JObject tmp((json::dict_t())); struct_member.FUNC_TO_NAME(tmp); obj[key] = tmp
 #define END_TO_JSON  }
@@ -34,8 +34,7 @@ namespace json
 
     class JObject;
 
-    class Parser
-    {
+    class Parser {
     public:
         Parser() = default;
 
@@ -43,24 +42,19 @@ namespace json
         static JObject FromString(string_view content);
 
         // accept any type and convert to Json format string
-        template<class T>
-        static string ToJSON(T const &src)
-        {
+        template<typename T>
+        static string ToJSON(T const &src) {
             // basic type in json
-            if constexpr(IS_TYPE(T, int_t))
-            {
+            if constexpr(IS_TYPE(T, int_t)) {
                 JObject object(src);
                 return object.to_string();
-            } else if constexpr(IS_TYPE(T, bool_t))
-            {
+            } else if constexpr(IS_TYPE(T, bool_t)) {
                 JObject object(src);
                 return object.to_string();
-            } else if constexpr(IS_TYPE(T, double_t))
-            {
+            } else if constexpr(IS_TYPE(T, double_t)) {
                 JObject object(src);
                 return object.to_string();
-            } else if constexpr(IS_TYPE(T, str_t))
-            {
+            } else if constexpr(IS_TYPE(T, str_t)) {
                 JObject object(src);
                 return object.to_string();
             }
@@ -73,17 +67,15 @@ namespace json
         }
 
         // accept a Json format string and convert to a variable of type T 
-        template<class T>
-        static T FromJson(string_view src)
-        {
+        template<typename T>
+        static T FromJson(string_view src) {
             JObject object = FromString(src);
             // basic type in Json 
-            if constexpr(is_basic_type<T>())
-            {
+            if constexpr(is_basic_type<T>()) {
                 return object.template Value<T>();
             }
 
-            if (object.Type() != T_DICT)throw std::logic_error("not dict type fromjson");
+            if (object.Type() != T_DICT) throw std::logic_error("not dict type fromjson");
             T ret;
             
             // call member method of customized class T to assign JObject member to T member variable

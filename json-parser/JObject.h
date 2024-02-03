@@ -10,8 +10,7 @@
 #include <string_view>
 #include <sstream>
 
-namespace json
-{
+namespace json {
     using std::variant;
     using std::map;
     using std::string;
@@ -20,8 +19,7 @@ namespace json
     using std::vector;
     using std::get_if;
 
-    enum TYPE
-    {
+    enum TYPE {
         T_NULL,
         T_BOOL,
         T_INT,
@@ -45,8 +43,7 @@ namespace json
 
 
     template<class T>
-    constexpr bool is_basic_type()
-    {
+    constexpr bool is_basic_type() {
         if constexpr(IS_TYPE(T, str_t) ||
                      IS_TYPE(T, bool_t) ||
                      IS_TYPE(T, double_t) ||
@@ -56,138 +53,112 @@ namespace json
         return false;
     }
 
-    class JObject
-    {
+    class JObject {
     public:
         using value_t = variant<bool_t, int_t, double_t, str_t, list_t, dict_t>;
 
-        JObject() // default type of JOject is null
-        {
+        JObject() {// default type of JOject is null 
             Null();
         }
 
-        JObject(int_t value)
-        {
+        JObject(int_t value) {
             Int(value);
         }
 
-        JObject(bool_t value)
-        {
+        JObject(bool_t value) {
             Bool(value);
         }
 
-        JObject(double_t value)
-        {
+        JObject(double_t value) {
             Double(value);
         }
 
-        JObject(str_t const &value)
-        {
+        JObject(str_t const &value) {
             Str(value);
         }
 
-        JObject(list_t value)
-        {
+        JObject(list_t value) {
             List(std::move(value));
         }
 
-        JObject(dict_t value)
-        {
+        JObject(dict_t value) {
             Dict(std::move(value));
         }
 
-        void Null()
-        {
+        void Null() {
             m_type = T_NULL;
             m_value = "null";
         }
 
-        void Int(int_t value)
-        {
+        void Int(int_t value) {
             m_value = value;
             m_type = T_INT;
         }
 
-        void Bool(bool_t value)
-        {
+        void Bool(bool_t value) {
             m_value = value;
             m_type = T_BOOL;
         }
 
-        void Double(double_t value)
-        {
+        void Double(double_t value) {
             m_type = T_DOUBLE;
             m_value = value;
         }
 
-        void Str(string_view value)
-        {
+        void Str(string_view value) {
             m_value = string(value);
             m_type = T_STR;
         }
 
-        void List(list_t value)
-        {
+        void List(list_t value) {
             m_value = std::move(value);
             m_type = T_LIST;
         }
 
-        void Dict(dict_t value)
-        {
+        void Dict(dict_t value) {
             m_value = std::move(value);
             m_type = T_DICT;
         }
 
-//        operator string()
-//        {
+//        operator string() {
 //            return Value<string>();
 //        }
 //
-//        operator int()
-//        {
+//        operator int() {
 //            return Value<int>();
 //        }
 //
-//        operator bool()
-//        {
+//        operator bool() {
 //            return Value<bool>();
 //        }
 //
-//        operator double()
-//        {
+//        operator double() {
 //            return Value<double>();
 //        }
 
 #define THROW_GET_ERROR(erron) throw std::logic_error("type error in get "#erron" value!")
 
         template<class V>
-        V &Value()
-        {   
+        V &Value() {   
             // get m_value by calling value(), which return a pointer to corresponding type of m_value
 
             // security check
-            if constexpr(IS_TYPE(V, str_t))
-            {
+            if constexpr(IS_TYPE(V, str_t)) {
                 if (m_type != T_STR)
                     THROW_GET_ERROR(string);
-            } else if constexpr(IS_TYPE(V, bool_t))
-            {
+            } else if constexpr(IS_TYPE(V, bool_t)) {
                 if (m_type != T_BOOL)
                     THROW_GET_ERROR(BOOL);
-            } else if constexpr(IS_TYPE(V, int_t))
-            {
+            } else if constexpr(IS_TYPE(V, int_t)) {
                 if (m_type != T_INT)
                     THROW_GET_ERROR(INT);
-            } else if constexpr(IS_TYPE(V, double_t))
-            {
+            } else if constexpr(IS_TYPE(V, double_t)) {
                 if (m_type != T_DOUBLE)
                     THROW_GET_ERROR(DOUBLE);
-            } else if constexpr(IS_TYPE(V, list_t))
-            {
+            } else if constexpr(IS_TYPE(V, list_t)) {
                 if (m_type != T_LIST)
                     THROW_GET_ERROR(LIST);
-            } else if constexpr(IS_TYPE(V, dict_t))
-            {
+            } else if constexpr(IS_TYPE(V, dict_t)) {
                 if (m_type != T_DICT)
                     THROW_GET_ERROR(DICT);
             }
@@ -200,18 +171,15 @@ namespace json
             return *((V *) v);
         }
 
-        TYPE Type()
-        {
+        TYPE Type() {
             return m_type;
         }
 
         string to_string();
 
-        void push_back(JObject item)
-        {   
+        void push_back(JObject item) {   
             // interface to be used by parser object when parsing a json list
-            if (m_type == T_LIST)
-            {
+            if (m_type == T_LIST) {
                 auto &list = Value<list_t>();
                 list.push_back(std::move(item));
                 return;
@@ -219,11 +187,9 @@ namespace json
             throw std::logic_error("not a list type! JObjcct::push_back()");
         }
 
-        void pop_back()
-        {
+        void pop_back() {
             // opposite interface for push_back
-            if (m_type == T_LIST)
-            {
+            if (m_type == T_LIST) {
                 auto &list = Value<list_t>();
                 list.pop_back();
                 return;
@@ -231,11 +197,9 @@ namespace json
             throw std::logic_error("not list type! JObjcct::pop_back()");
         }
 
-        JObject &operator[](string const &key)
-        {
+        JObject &operator[](string const &key) {
             // overload subscript operator to access value
-            if (m_type == T_DICT)
-            {
+            if (m_type == T_DICT) {
                 auto &dict = Value<dict_t>();
                 return dict[key];
             }

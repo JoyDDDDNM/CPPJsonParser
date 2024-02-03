@@ -2,8 +2,7 @@
 
 using namespace json;
 
-void *JObject::value()
-{
+void *JObject::value() {
     // get pointer to current type of m_value
     switch (m_type)
     {
@@ -29,13 +28,11 @@ void *JObject::value()
 // convert value pointer to corresponding type of pointer, then reference it
 #define GET_VALUE(type) *((type*) value)
 
-string JObject::to_string()
-{
+string JObject::to_string() {
     // convert JObject to json string format
     void *value = this->value();
     std::ostringstream os;
-    switch (m_type)
-    {
+    switch (m_type) {
         case T_NULL:
             os << "null";
             break;
@@ -53,14 +50,11 @@ string JObject::to_string()
         case T_STR:
             os << '\"' << GET_VALUE(string) << '\"';
             break;
-        case T_LIST:
-        {
+        case T_LIST: {
             list_t &list = GET_VALUE(list_t);
             os << '[';
-            for (auto i = 0; i < list.size(); i++)
-            {
-                if (i != list.size() - 1)
-                {
+            for (auto i = 0; i < list.size(); i++) {
+                if (i != list.size() - 1) {
                     // recursively call to_string on each object
                     // Problem: this could cause stack overflow
                     os << ((list[i]).to_string());
@@ -70,12 +64,10 @@ string JObject::to_string()
             os << ']';
             break;
         }
-        case T_DICT:
-        {
+        case T_DICT: {
             dict_t &dict = GET_VALUE(dict_t);
             os << '{';
-            for (auto it = dict.begin(); it != dict.end(); ++it)
-            {
+            for (auto it = dict.begin(); it != dict.end(); ++it) {
                 if (it != dict.begin()) // separate json  object by comma
                     os << ',';
                 os << '\"' << it->first << "\":" << it->second.to_string();

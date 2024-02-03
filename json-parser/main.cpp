@@ -4,11 +4,9 @@
 #include "Parser.h"
 #include "../benchmark/Timer.hpp"
 
-
 using namespace json;
 
-struct Base
-{
+struct Base {
     int pp;
     string qq;
 
@@ -23,8 +21,7 @@ struct Base
     END_FROM_JSON
 };
 
-struct Mytest
-{
+struct Mytest {
     int id;
     std::string name;
     Base q;
@@ -42,21 +39,21 @@ struct Mytest
     END_FROM_JSON
 };
 
-void test_class_serialization()
-{
+void test_class_serialization() {
     Mytest test{.id = 32, .name = "fda"};
     auto item = Parser::FromJson<Mytest>(R"({"base":{"pp":0,"qq":""},"id":32,"name":"fda"} )");     // convert to user-defined class
     std::cout << Parser::ToJSON(item);                                                              // convert back to json string
 }
 
-void test_string_parser()
-{
+void test_string_parser() {
     std::ifstream fin(R"(../test_source/test_out_nl.json)");
     if (!fin) {
         std::cout << "read file error";
         return;
     }
+    
     std::string text((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
+    
     {
         // start timer to count the time for coversion
         Timer t;
@@ -66,8 +63,7 @@ void test_string_parser()
     }
 }
 
-int main()
-{
+int main() {
     test_class_serialization();
     // test_string_parser();
 }
