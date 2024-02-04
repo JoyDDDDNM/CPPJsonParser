@@ -68,8 +68,8 @@ void test_string_parser(std::string file) {
 }
 
 int main() {
-    // test_class_serialization();
-    test_string_parser(R"(../test_source/test.json)");
-    test_string_parser(R"(../test_source/test_out.json)");
-    test_string_parser(R"(../test_source/test_out_nl.json)");
+    test_class_serialization();
+    //test_string_parser(R"(../test_source/test.json)");
+    //test_string_parser(R"(../test_source/test_out.json)");
+    //test_string_parser(R"(../test_source/test_out_nl.json)");
 }

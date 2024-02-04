@@ -1,6 +1,12 @@
 # Introduction
 
-This program only cover two classes: JObject and Parser.
+JSON is an open standard file format and data interchange format that uses human-readable text to store and transmit data objects consisting of attribute–value pairs and arrays. It is a common data format with diverse uses in electronic data interchange, including that of web applications with servers.
+
+---
+
+This program contains two classes: JObject and Parser, which enable json string sequentialization and de-sequentialization.
+
+![Sequentialization and De-sequentialization](Json_Parser.png)
 
 ## JObject
 
