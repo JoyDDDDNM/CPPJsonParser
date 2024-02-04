@@ -7,7 +7,7 @@ using namespace json;
 
 JObject Parser::FromString(string_view content) {
     // accept json format string and convert to a JObject
-    // use the same parser instance instead of initializing a duplicate parser
+
     static Parser instance;
     instance.init(content);
     return instance.parse();
@@ -22,9 +22,8 @@ void Parser::init(std::string_view src) {
 
 void Parser::trim_right() {
     // delete trailing spaces, to determine the end of line
-    m_str.erase(std::find_if(m_str.rbegin(), m_str.rend(), [](char ch) {
-        return !std::isspace(ch);
-    }).base(), m_str.end());
+    m_str.erase(std::find_if(m_str.rbegin(), m_str.rend(), [](char ch) { return !std::isspace(ch); }).base(),
+                 m_str.end());
 }
 
 void Parser::skip_comment() {
@@ -176,7 +175,7 @@ string Parser::parse_string() {
 }
 
 JObject Parser::parse_list() {
-    JObject arr((list_t()));
+    JObject arr{ list_t() };
     m_idx++;
     char ch = get_next_token();
     if (ch == ']') {
@@ -204,7 +203,7 @@ JObject Parser::parse_list() {
 }
 
 JObject Parser::parse_dict() {
-    JObject dict((dict_t()));
+    JObject dict{ dict_t() };
     m_idx++;
     char ch = get_next_token();
     if (ch == '}') {
@@ -214,7 +213,9 @@ JObject Parser::parse_dict() {
     while (true) {
         // parse object key and convert to string type
         string key = std::move(parse().Value<string>());
+        
         ch = get_next_token();
+
         if (ch != ':') {
             throw std::logic_error("expected ':' in parse dict");
         }

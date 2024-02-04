@@ -10,15 +10,20 @@ struct Base {
     int pp;
     string qq;
 
-    START_TO_JSON
+    // provide interface as macro to covert struct Base into JObject
+    START_TO_JSON       // _to_json
         to("pp") = pp;
         to("qq") = qq;
     END_TO_JSON
 
-    START_FROM_JSON
+    // provide interface as macro to covert JObject into struct Base 
+    START_FROM_JSON     // _from_json
         pp = from("pp", int);
         qq = from("qq", string);
     END_FROM_JSON
+
+    // we need to provide START_TO_JSON and START_FROM_JSON method so that the compiler would know how
+    // to perform conversion between class member and JObject
 };
 
 struct Mytest {
@@ -40,7 +45,7 @@ struct Mytest {
 };
 
 void test_class_serialization() {
-    Mytest test{.id = 32, .name = "fda"};
+    // Mytest test{.id = 32, .name = "fda"};
     auto item = Parser::FromJson<Mytest>(R"({"base":{"pp":0,"qq":""},"id":32,"name":"fda"} )");     // convert to user-defined class
     std::cout << Parser::ToJSON(item);                                                              // convert back to json string
 }
@@ -65,5 +70,5 @@ void test_string_parser() {
 
 int main() {
     test_class_serialization();
-    // test_string_parser();
+    test_string_parser();
 }

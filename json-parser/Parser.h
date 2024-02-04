@@ -15,15 +15,22 @@ namespace json {
 // convert JObject to class member
 #define FUNC_FROM_NAME _from_json
 
+// start conversion using FUNC_TO_NAME
 #define START_TO_JSON void FUNC_TO_NAME(json::JObject & obj) const{
+
 #define to(key) obj[key]
 
 // macro to add a customized struct (recursively call)
-#define to_struct(key, struct_member) json::JObject tmp((json::dict_t())); struct_member.FUNC_TO_NAME(tmp); obj[key] = tmp
+#define to_struct(key, struct_member) \
+            json::JObject tmp{json::dict_t()}; \
+            struct_member.FUNC_TO_NAME(tmp); \
+            obj[key] = tmp
+
 #define END_TO_JSON  }
 
 #define START_FROM_JSON void FUNC_FROM_NAME(json::JObject& obj) {
 #define from(key, type) obj[key].Value<type>()
+
 // macro to get a customized struct from JObject (recursively call)
 #define from_struct(key, struct_member) struct_member.FUNC_FROM_NAME(obj[key])
 #define END_FROM_JSON }
@@ -58,31 +65,34 @@ namespace json {
                 JObject object(src);
                 return object.to_string();
             }
-            // if this is a user-defined class, it needs to have a customized method to assign its member
-            // to JObject, then call to_string
-            json::JObject obj((json::dict_t()));
+            
+            // create a dict JObject
+            json::JObject obj{ json::dict_t() };
 
+            // transform src into JObject
             src.FUNC_TO_NAME(obj);
             return obj.to_string();
         }
 
-        // accept a Json format string and convert to a variable of type T 
+        // accept a Json format string and convert to user defined class
         template<typename T>
         static T FromJson(string_view src) {
             JObject object = FromString(src);
             // basic type in Json 
             if constexpr(is_basic_type<T>()) {
-                return object.template Value<T>();
+                return object.Value<T>();
             }
 
-            if (object.Type() != T_DICT) throw std::logic_error("not dict type fromjson");
+            if (object.Type() != T_DICT) throw std::logic_error("not dict type from json");
+            
+            // this is a dict JObject, we will convert it into any compatible class
             T ret;
             
             // call member method of customized class T to assign JObject member to T member variable
             ret.FUNC_FROM_NAME(object);
             return ret;
         }
-
+    private:
         void init(string_view src);
 
         void trim_right();

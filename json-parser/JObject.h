@@ -41,7 +41,6 @@ namespace json {
 
 #define IS_TYPE(typea, typeb) std::is_same<typea,typeb>::value
 
-
     template<class T>
     constexpr bool is_basic_type() {
         if constexpr(IS_TYPE(T, str_t) ||
@@ -120,24 +119,25 @@ namespace json {
             m_type = T_DICT;
         }
 
-//        operator string() {
-//            return Value<string>();
-//        }
-//
-//        operator int() {
-//            return Value<int>();
-//        }
-//
-//        operator bool() {
-//            return Value<bool>();
-//        }
-//
-//        operator double() {
-//            return Value<double>();
-//        }
+        // operator string() {
+        //     return Value<string>();
+        // }
+
+        // operator int() {
+        //     return Value<int>();
+        // }
+
+        // operator bool() {
+        //     return Value<bool>();
+        // }
+
+        // operator double() {
+        //     return Value<double>();
+        // }
 
 #define THROW_GET_ERROR(erron) throw std::logic_error("type error in get "#erron" value!")
 
+        // provide interface to transfer stored value into correct type
         template<class V>
         V &Value() {   
             // get m_value by calling value(), which return a pointer to corresponding type of m_value
@@ -184,7 +184,7 @@ namespace json {
                 list.push_back(std::move(item));
                 return;
             }
-            throw std::logic_error("not a list type! JObjcct::push_back()");
+            throw std::logic_error("not a list type! JObject::push_back()");
         }
 
         void pop_back() {
@@ -194,7 +194,7 @@ namespace json {
                 list.pop_back();
                 return;
             }
-            throw std::logic_error("not list type! JObjcct::pop_back()");
+            throw std::logic_error("not list type! JObject::pop_back()");
         }
 
         JObject &operator[](string const &key) {

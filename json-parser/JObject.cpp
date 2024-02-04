@@ -70,7 +70,8 @@ string JObject::to_string() {
             for (auto it = dict.begin(); it != dict.end(); ++it) {
                 if (it != dict.begin()) // separate json  object by comma
                     os << ',';
-                os << '\"' << it->first << "\":" << it->second.to_string();
+                os << '\"' << it->first << "\":" << it->second.to_string(); 
+                // this will recursively call to_string() if the dict has nested JObject 
             }
             os << '}';
             break;
@@ -78,5 +79,6 @@ string JObject::to_string() {
         default:
             return "";
     }
+    
     return os.str();
 }
