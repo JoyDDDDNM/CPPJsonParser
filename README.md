@@ -42,7 +42,7 @@ An intermediate component which support three functionalities
 
 ### Parser::FromString
 
-Accept an Json raw string and convert it into JObject
+Accept an Json format string (From file stream) and convert it into JObject
 
 ### Parser::ToJSON
 
@@ -50,7 +50,7 @@ Accept any type and convert into Json format string (From file stream)
 
 ### Parser::FromJson
 
-accept a Json format (From file stream) string and convert into user defined class
+accept a Json raw string (set by user) and convert into user defined class
 
 ## Benchmark
 
