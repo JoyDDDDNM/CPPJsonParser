@@ -50,25 +50,26 @@ void test_class_serialization() {
     std::cout << Parser::ToJSON(item);                                                              // convert back to json string
 }
 
-void test_string_parser() {
-    std::ifstream fin(R"(../test_source/test_out_nl.json)");
+void test_string_parser(std::string file) {
+    std::ifstream fin(file);
     if (!fin) {
         std::cout << "read file error";
         return;
     }
     
     std::string text((std::istreambuf_iterator<char>(fin)), std::istreambuf_iterator<char>());
-    
     {
         // start timer to count the time for coversion
         Timer t;
         auto object = json::Parser::FromString(text);
 
-        std::cout << (object["[css]"].to_string()) << "\n";
+        // std::cout << (object["[css]"].to_string()) << "\n";
     }
 }
 
 int main() {
-    test_class_serialization();
-    test_string_parser();
+    // test_class_serialization();
+    test_string_parser(R"(../test_source/test.json)");
+    test_string_parser(R"(../test_source/test_out.json)");
+    test_string_parser(R"(../test_source/test_out_nl.json)");
 }
