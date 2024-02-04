@@ -1,0 +1,3 @@
+/Users/wuruidong/Desktop/Json-Parser/build/CMakeFiles/JParser.dir
+/Users/wuruidong/Desktop/Json-Parser/build/CMakeFiles/edit_cache.dir
+/Users/wuruidong/Desktop/Json-Parser/build/CMakeFiles/rebuild_cache.dir
